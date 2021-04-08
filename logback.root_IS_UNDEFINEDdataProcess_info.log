@@ -1,0 +1,13 @@
+2021-03-25 09:56:33.741 INFO  --- [           main] c.t.dataProcess.DataProcessApplication   : Starting DataProcessApplication using Java 1.8.0_191 on DESKTOP-AU5N8AU with PID 12048 (D:\workspace\dataProcess\target\classes started by 111111 in D:\workspace\dataProcess)
+2021-03-25 09:56:33.742 INFO  --- [           main] c.t.dataProcess.DataProcessApplication   : The following profiles are active: dev
+2021-03-25 09:56:38.635 INFO  --- [           main] c.t.dataProcess.DataProcessApplication   : Started DataProcessApplication in 5.495 seconds (JVM running for 6.68)
+2021-03-25 09:56:48.119 DEBUG --- [nio-8182-exec-1] c.t.d.controller.DataProcessController   : queryList(dataID:startUsers,userid:null)
+2021-03-25 09:58:24.852 DEBUG --- [nio-8182-exec-4] c.t.d.controller.DataProcessController   : queryList(dataID:startUsers,userid:null)
+2021-03-25 09:59:00.882 DEBUG --- [nio-8182-exec-3] c.t.d.controller.DataProcessController   : queryList(dataID:startItems,userid:null)
+2021-03-25 09:59:02.793 DEBUG --- [nio-8182-exec-7] c.t.d.controller.DataProcessController   : queryList(dataID:startItems,userid:null)
+2021-03-25 09:59:23.853 DEBUG --- [nio-8182-exec-6] c.t.d.controller.DataProcessController   : queryList(dataID:startUsers,userid:null)
+2021-03-25 09:59:39.971 DEBUG --- [io-8182-exec-10] c.t.d.controller.DataProcessController   : queryList(dataID:startUsers,userid:null)
+2021-03-25 09:59:42.269 DEBUG --- [nio-8182-exec-5] c.t.d.controller.DataProcessController   : queryList(dataID:startItems,userid:null)
+2021-03-25 09:59:53.330 DEBUG --- [nio-8182-exec-9] c.t.d.controller.DataProcessController   : save(dataID:createAppList,userid:fgjcw
+2021-03-25 10:00:06.374 DEBUG --- [nio-8182-exec-1] c.t.d.controller.DataProcessController   : queryList(dataID:approvalUsers,userid:null)
+2021-03-25 10:00:08.162 DEBUG --- [nio-8182-exec-4] c.t.d.controller.DataProcessController   : queryListPaging(dataID:appListsToCheck,userid:fgjdhl)
