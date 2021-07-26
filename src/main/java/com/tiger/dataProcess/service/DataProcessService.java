@@ -32,6 +32,8 @@ public class DataProcessService {
 	private static Logger log = LoggerFactory.getLogger(DataProcessService.class);
 	@Autowired
 	private MultilDataSources multilDataSources;
+	@Autowired
+	private DBConfig dbConfig;
     private JdbcTemplate jdbcTemplate;
 	@Autowired
     private Environment environment;
@@ -42,23 +44,12 @@ public class DataProcessService {
   	@SuppressWarnings("unchecked")
   	public JSONObject getListPaging(String userid,int start,int limit,String sort,String dir,String dtID, String qparams) {
   		final JSONObject infos = new JSONObject();
-  		String wholeProName = environment.getProperty("pro_pglist_"+dtID);
-  		if(StringUtils.isEmpty(wholeProName)){
-  			infos.put("error", "未配置取数的存储过程：pro_pglist_"+dtID);
-  			return infos;
+  		JSONObject pros = parseProname("pro_pglist",dtID);
+  		if(pros!=null&&pros.containsKey("error")){
+  			return pros;
   		}
-  		String[] dtPros = jasyptUtils.parseDataPros(wholeProName);
-  		String dtName = dtPros[0];
-  		String proName = dtPros[1];
-  		jdbcTemplate= multilDataSources.getJdbcTemplate(dtName);
-  		if(jdbcTemplate==null){
-  			infos.put("error", "未设置相应的数据源："+dtName);
-  			return infos;
-  		}
-  		if(proName==null||"".equals(proName)){
-  			infos.put("error", "未设置相应的存储过程："+"pro_pglist_"+dtID);
-  			return infos;
-  		}
+  		String proName = pros.getString("proName");
+  		
   		StringBuffer sql = new StringBuffer("{call ");
   		sql.append(proName).append("(?,?,?,?,?,?,?,?)}");
   		
@@ -122,23 +113,12 @@ public class DataProcessService {
   	@SuppressWarnings("unchecked")
 	public JSONObject getList(String userid,String sort,String dir,String dtID, String qparams) {
 		final JSONObject infos = new JSONObject();
-		String wholeProName = environment.getProperty("pro_list_"+dtID);
-		if(StringUtils.isEmpty(wholeProName)){
-  			infos.put("error", "未配置取数的存储过程：pro_list_"+dtID);
-  			return infos;
+		JSONObject pros = parseProname("pro_list",dtID);
+  		if(pros!=null&&pros.containsKey("error")){
+  			return pros;
   		}
-		String[] dtPros = jasyptUtils.parseDataPros(wholeProName);
-  		String dtName = dtPros[0];
-  		String proName = dtPros[1];
-  		jdbcTemplate= multilDataSources.getJdbcTemplate(dtName);
-  		if(jdbcTemplate==null){
-  			infos.put("error", "未设置相应的数据源："+dtName);
-  			return infos;
-  		}
-		if(proName==null||"".equals(proName)){
-			infos.put("error", "未设置相应的存储过程："+"pro_list_"+dtID);
-			return infos;
-		}
+  		String proName = pros.getString("proName");
+		
 		StringBuffer sql = new StringBuffer("{call ");
 		sql.append(proName).append("(?,?,?,?,?)}");
 		final String fuserid = userid;
@@ -189,23 +169,12 @@ public class DataProcessService {
   	@SuppressWarnings("rawtypes")
 	public JSONObject getSingleRecord(String userid,String dtID, String params) {
 		JSONObject infos = new JSONObject();
-		String wholeProName = environment.getProperty("pro_get_"+dtID);
-		if(StringUtils.isEmpty(wholeProName)){
-  			infos.put("error", "未配置取数的存储过程：pro_get_"+dtID);
-  			return infos;
+		JSONObject pros = parseProname("pro_get",dtID);
+  		if(pros!=null&&pros.containsKey("error")){
+  			return pros;
   		}
-  		String[] dtPros = jasyptUtils.parseDataPros(wholeProName);
-  		String dtName = dtPros[0];
-  		String proName = dtPros[1];
-  		jdbcTemplate= multilDataSources.getJdbcTemplate(dtName);
-  		if(jdbcTemplate==null){
-  			infos.put("error", "未设置相应的数据源："+dtName);
-  			return infos;
-  		}
-		if(proName==null||"".equals(proName)){
-			infos.put("error", "未设置相应的存储过程："+"pro_get_"+dtID);
-			return infos;
-		}
+  		String proName = pros.getString("proName");
+		
 		StringBuffer sql = new StringBuffer("{call ");
 		sql.append(proName).append("(?,?,?)}");
 		final String fuserid = userid;
@@ -249,24 +218,12 @@ public class DataProcessService {
   	@SuppressWarnings("unchecked")
 	public JSONObject saveData(String userid,String dtID, String params) {
 		final JSONObject infos = new JSONObject();
-		String wholeProName = environment.getProperty("pro_save_"+dtID);
-		if(StringUtils.isEmpty(wholeProName)){
-  			infos.put("error", "未配置保存数据的存储过程：pro_save_"+dtID);
-  			return infos;
+		JSONObject pros = parseProname("pro_save",dtID);
+  		if(pros!=null&&pros.containsKey("error")){
+  			return pros;
   		}
-  		String[] dtPros = jasyptUtils.parseDataPros(wholeProName);
-  		String dtName = dtPros[0];
-  		String proName = dtPros[1];
-  		jdbcTemplate= multilDataSources.getJdbcTemplate(dtName);
-  		if(jdbcTemplate==null){
-  			infos.put("error", "未设置相应的数据源："+dtName);
-  			return infos;
-  		}
-		if(proName==null||"".equals(proName)){
-			infos.put("flag", "9");
-			infos.put("info", "未设置相应的存储过程："+"pro_save_"+dtID);
-			return infos;
-		}
+  		String proName = pros.getString("proName");
+		
 		StringBuffer sql = new StringBuffer("{call ");
 		sql.append(proName).append("(?,?,?,?)}");
 		String flag = "1";
@@ -306,25 +263,12 @@ public class DataProcessService {
 	@SuppressWarnings("unchecked")
 	public Map deleteData(String userid,String dtID, String params) {
 		final JSONObject infos = new JSONObject();
-		String wholeProName = environment.getProperty("pro_delete_"+dtID);
-		if(StringUtils.isEmpty(wholeProName)){
-  			infos.put("error", "未配置删除数据的存储过程：pro_delete_"+dtID);
-  			return infos;
+		JSONObject pros = parseProname("pro_delete",dtID);
+  		if(pros!=null&&pros.containsKey("error")){
+  			return pros;
   		}
-  		String[] dtPros = jasyptUtils.parseDataPros(wholeProName);
-  		String dtName = dtPros[0];
-  		String proName = dtPros[1];
-  		jdbcTemplate= multilDataSources.getJdbcTemplate(dtName);
-  		if(jdbcTemplate==null){
-  			infos.put("error", "未设置相应的数据源："+dtName);
-  			return infos;
-  		}
+  		String proName = pros.getString("proName");
 		
-		if(proName==null||"".equals(proName)){
-			infos.put("flag", "9");
-			infos.put("info", "未设置相应的存储过程："+"pro_delete_"+dtID);
-			return infos;
-		}
 		StringBuffer sql = new StringBuffer("{call ");
 		sql.append(proName).append("(?,?,?,?)}");
 		String flag = "1";
@@ -357,13 +301,79 @@ public class DataProcessService {
 		}
 		return infos;
 	}
-
-	public List getUsers(String dtName){
-		List users = new ArrayList();
-		String sql = "select * from users where qybj=1"; 
-		jdbcTemplate = multilDataSources.getJdbcTemplate(dtName);
-        users = jdbcTemplate.queryForList(sql);
-        System.out.println("ServiceA取数完成，共"+(users==null?0:users.size())+"条记录！");
-		return users;
+	
+	@SuppressWarnings("unchecked")
+	public Map checkDuplicate(String userid, String dtID, String params) {
+		final JSONObject infos = new JSONObject();
+		JSONObject pros = parseProname("pro_checkDup",dtID);
+  		if(pros!=null&&pros.containsKey("error")){
+  			return pros;
+  		}
+  		String proName = pros.getString("proName");
+		StringBuffer sql = new StringBuffer("{call ");
+		sql.append(proName).append("(?,?,?,?,?)}");
+		String flag = "1";
+		try{
+			final String fUser = userid;
+			final String fparams = params;
+			log.debug("v_operator:"+fUser);
+			log.debug("v_params:"+fparams);
+			flag = (String)jdbcTemplate.execute(sql.toString(),new CallableStatementCallback() {
+				public Object doInCallableStatement(CallableStatement cs)throws SQLException, DataAccessException {
+					cs.setString(1,fUser);
+					cs.setString(2,fparams);
+	                cs.registerOutParameter(3,Types.VARCHAR);  
+	                cs.registerOutParameter(4,Types.VARCHAR);  
+	                cs.registerOutParameter(5,Types.VARCHAR); 
+	                cs.execute();  
+	                String tmpflag = cs.getString(3);
+	                String tmpDup = cs.getString(4);
+	                String tmpInfo = cs.getString(5);
+	                if(!"1".equals(tmpflag)){
+	                	log.error(tmpInfo);
+	                }
+	                infos.put("flag", tmpflag);
+	                infos.put("isDup", tmpDup);
+	                infos.put("info", tmpInfo);
+	                return tmpflag;  
+				} 
+			});
+		}catch(Throwable e){
+			infos.put("flag", "9");
+			infos.put("isDup", "");
+			infos.put("info", e.toString());
+			log.error(e.toString());
+		}
+		return infos;
 	}
+	
+	private JSONObject parseProname(String proType,String dtID){
+		JSONObject infos = new JSONObject();
+		String proKey=proType+"_"+dtID;
+		String wholeProName = dbConfig.getWholeProName(proKey);
+  		if(StringUtils.isEmpty(wholeProName)){
+  			log.info("数据库中未找到存储过程："+proKey+"，尝试配置文件中查找。");
+  			wholeProName = environment.getProperty(proKey);
+  			if(StringUtils.isEmpty(wholeProName)){
+  				infos.put("error", "未配置存储过程："+proKey);
+  				return infos;
+  			}
+  		}
+  		String[] dtPros = jasyptUtils.parseDataPros(wholeProName);
+  		String dtName = dtPros[0];
+  		String proName = dtPros[1];
+  		jdbcTemplate= multilDataSources.getJdbcTemplate(dtName);
+  		if(jdbcTemplate==null){
+  			infos.put("error", "未配置相应的数据源："+dtName);
+  			return infos;
+  		}
+  		if(proName==null||"".equals(proName)){
+  			infos.put("error", "未配置要执行的存储过程名："+proKey);
+  			return infos;
+  		}
+  		infos.put("dtName", dtName);
+  		infos.put("proName", proName);
+  		return infos;
+	}
+	
 }

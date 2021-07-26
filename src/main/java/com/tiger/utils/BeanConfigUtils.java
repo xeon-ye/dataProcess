@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -49,6 +50,9 @@ public class BeanConfigUtils {
 					System.out.println("DruidDataSource:"+dtSrc.getName());
 					mdts.addDataSource(dn, dtSrc);
 					JdbcTemplate jdbcTemplate = jdbcTemplate(dtSrc);
+					if(dn.equals(mdts.getPrimaryDataSource())){
+						mdts.setPrimaryJdbcTemplate(jdbcTemplate);
+					}
 					mdts.addJdbcTemplate(dn, jdbcTemplate);
 				}catch(Exception e){
 					log.error("创建数据连接池时发生错误："+e.toString());
